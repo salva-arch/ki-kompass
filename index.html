@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Kompass für die Oberstufe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chosen Palette: Calm Harmony (Warm Stone, Sage Green, Slate Blue, Soft Coral) -->
+    <!-- Application Structure Plan: 
+         1. Header: Context (Media Literacy).
+         2. Tool Grid: Interactive cards with direct links.
+         3. Detail View (Modal): High-Quality Prompt Kits.
+         4. Strategy Section: Guide.
+         
+         V10 Update: 
+         - Replaced Tool 13 (ImageFX) with "Gemini 3 Nano Banana Pro".
+         - Updated URL to https://gemini.google.com.
+         - Updated Prompt Kit for the new model capabilities (Text rendering, Prompt adherence).
+    -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #1c1917; /* stone-900 */
+        }
+
+        /* Custom Scrollbar */
+        .modal-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        /* Prompt Template Styling */
+        .prompt-template {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
+            border-radius: 0.5rem;
+            position: relative;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: rgba(168, 162, 158, 0.25);
+            pointer-events: none;
+            z-index: 9999;
+            user-select: none;
+            letter-spacing: 0.05em;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Watermark -->
+    <div class="watermark">Docimo 2026</div>
+
+    <!-- Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🧭</span>
+                <h1 class="text-xl font-bold text-stone-800 tracking-tight">KI-Kompass <span class="text-stone-500 font-normal">Sek II</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#tools" class="text-stone-600 hover:text-teal-600 font-medium transition">Tools entdecken</a>
+                <a href="#guide" class="text-stone-600 hover:text-teal-600 font-medium transition">Dein Guide</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="bg-stone-50 py-12 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-stone-800 mb-4">KI als Werkzeug verstehen, nicht als Ersatz.</h2>
+            <p class="text-lg text-stone-600 leading-relaxed max-w-2xl mx-auto">
+                Willkommen im Navigationssystem für deinen Schulalltag. Hier findest du geprüfte Tools für Recherche, Coding und Kreativität – jetzt mit <strong>High-Quality Prompt Kits</strong> für jedes Tool.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-16">
+
+        <!-- SECTION 1: Tool Explorer -->
+        <section id="tools" class="scroll-mt-20">
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold text-stone-800 mb-2">🔭 Tool-Explorer</h3>
+                <p class="text-stone-600 mb-6">Klicke auf eine Karte, um das vollständige <strong>Prompt Kit</strong> (Template, Strategien & Beispiele) zu öffnen.</p>
+                
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2 mb-6" id="filter-container">
+                    <button class="filter-btn active bg-stone-800 text-white px-4 py-2 rounded-full text-sm font-medium transition shadow-sm hover:bg-stone-700" data-filter="all">Alle</button>
+                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Text/Chat">💬 Text & Chat</button>
+                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Recherche">🔍 Recherche</button>
+                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Bild/Video">🎨 Bild & Video</button>
+                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Coding">💻 Coding</button>
+                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Präsentation">📊 Präsentation</button>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="tools-grid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- SECTION 2: Guide -->
+        <section id="guide" class="scroll-mt-20 space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-stone-100">
+            <div class="flex items-center gap-3 mb-2">
+                <h3 class="text-2xl font-bold text-stone-800">🧠 Schnell-Orientierung: Welcher Hebel wirkt wo?</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left text-stone-600">
+                    <thead class="text-xs text-stone-700 uppercase bg-stone-50">
+                        <tr>
+                            <th class="px-6 py-3">Tool</th>
+                            <th class="px-6 py-3">Größter Prompt-Hebel</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                        <tr><td class="px-6 py-2 font-medium">ChatGPT</td><td class="px-6 py-2">Klare Ziel-/Format-Constraints, Iterationsschleifen</td></tr>
+                        <tr><td class="px-6 py-2 font-medium">Perplexity</td><td class="px-6 py-2">Klare Frage + Scope, <strong>keine</strong> Few-Shot Beispiele</td></tr>
+                        <tr><td class="px-6 py-2 font-medium">Claude</td><td class="px-6 py-2">XML-Tags für Trennung von Kontext/Instruktionen</td></tr>
+                        <tr><td class="px-6 py-2 font-medium">Midjourney</td><td class="px-6 py-2">Englisch + Parameter am Ende (--ar, --s)</td></tr>
+                        <tr><td class="px-6 py-2 font-medium">Canva</td><td class="px-6 py-2">Rolle + Brand-Regeln + Layout-Wünsche</td></tr>
+                        <tr><td class="px-6 py-2 font-medium">Gemini 3 Nano</td><td class="px-6 py-2">Natürliche Sprache + Text-im-Bild Anweisungen</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detailed Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-stone-900/60 hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="modal-content">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-stone-100 bg-stone-50 rounded-t-2xl">
+                <div class="flex items-center gap-4">
+                    <div id="modal-icon" class="text-4xl"></div>
+                    <div>
+                        <h3 id="modal-title" class="text-2xl font-bold text-stone-900 leading-none"></h3>
+                        <span id="modal-category" class="inline-block mt-1 text-xs font-semibold text-teal-700 uppercase tracking-wider"></span>
+                    </div>
+                </div>
+                <button id="close-modal" class="text-stone-400 hover:text-stone-700 transition p-2 rounded-full hover:bg-stone-200">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto modal-scroll space-y-8">
+                
+                <!-- Quick Stats Row -->
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600">
+                        <i class="fas fa-euro-sign mr-1"></i> <span id="modal-cost" class="font-medium"></span>
+                    </div>
+                    <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600">
+                        <i class="fas fa-graduation-cap mr-1"></i> Kl. <span id="modal-grade" class="font-medium"></span>
+                    </div>
+                    <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600 flex-grow">
+                        <i class="fas fa-shield-alt mr-1"></i> <span id="modal-privacy"></span>
+                    </div>
+                </div>
+
+                <!-- Description & Risks -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-stone-800 mb-2 flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Stärken</h4>
+                        <p id="modal-strengths" class="text-stone-600 text-sm leading-relaxed"></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-stone-800 mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle text-rose-500"></i> Grenzen</h4>
+                        <p id="modal-risks" class="text-stone-600 text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <hr class="border-stone-100">
+
+                <!-- PROMPT KIT SECTION -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-teal-100 text-teal-800 text-xs font-bold px-2 py-1 rounded uppercase">High-Quality</span>
+                        <h3 class="text-xl font-bold text-stone-800">Prompt Kit</h3>
+                    </div>
+
+                    <!-- 1. Template -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-end mb-2">
+                            <h4 class="font-semibold text-stone-700 text-sm"><i class="fas fa-clipboard-list mr-1"></i> Copy-Paste Template</h4>
+                            <span class="text-xs text-stone-400 italic">Variablen in [Klammern] anpassen</span>
+                        </div>
+                        <div class="prompt-template p-4 rounded-md shadow-inner relative group">
+                            <pre id="modal-template" class="whitespace-pre-wrap"></pre>
+                            <button onclick="copyToClipboard('modal-template')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2 py-1 rounded opacity-50 group-hover:opacity-100 transition">
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- 2. Power Moves -->
+                        <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2">
+                                <i class="fas fa-rocket"></i> Power Moves
+                            </h4>
+                            <ul id="modal-powermoves" class="text-sm text-indigo-800 space-y-2 list-disc list-inside"></ul>
+                        </div>
+
+                        <!-- 3. Examples -->
+                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                            <h4 class="font-bold text-emerald-900 mb-3 flex items-center gap-2">
+                                <i class="fas fa-lightbulb"></i> Beispiele
+                            </h4>
+                            <ul id="modal-examples" class="text-sm text-emerald-800 space-y-3"></ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-stone-100 bg-stone-50 rounded-b-2xl flex justify-between items-center">
+                <span class="text-xs text-stone-500">Immer kritisch bleiben. KI ist Assistenz, kein Ersatz.</span>
+                <a id="modal-link" href="#" target="_blank" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 shadow-md flex items-center gap-2 text-sm">
+                    Zum Tool <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-stone-400 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2 text-stone-300">Entwickelt für den Medienunterricht in der Sekundarstufe II.</p>
+            <p class="text-sm">Bitte beachte die Nutzungsbedingungen der jeweiligen Anbieter.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE (ENHANCED) ---
+        const toolsData = [
+            {
+                id: 1,
+                name: "ChatGPT (OpenAI)",
+                category: "Text/Chat",
+                icon: "🤖",
+                url: "https://chatgpt.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Account nötig. Training Opt-out möglich.",
+                strengths: "Hervorragendes Sprachverständnis, vielseitig (Text, Code, Analyse), sehr schnell.",
+                risks: "Halluzinationen bei Fakten. Standard-Texte oft floskelhaft.",
+                template: `Rolle: Du bist [Expert:in] mit Fokus auf [Domäne].
+
+Ziel: Erzeuge das bestmögliche Ergebnis für [Zweck].
+Kontext: [Relevante Fakten, Zielgruppe, Randbedingungen].
+
+Aufgabe:
+1) [Hauptaufgabe]
+2) [Nebenaufgabe]
+
+Qualitätsregeln:
+- Muss enthalten: [Kriterienliste]
+- Muss vermeiden: [No-Gos]
+- Ton: [z.B. direkt, sachlich]
+- Format: [z.B. Markdown Tabelle]
+
+Output:
+A) Ergebnis
+B) Kurz-Check: "Erfüllt/Fehlt" zu Regeln
+C) 3 konkrete Verbesserungsfragen`,
+                powerMoves: [
+                    "Erzwinge ein Output-Format + Checkliste (reduziert Gelaber).",
+                    "2-Pass-Loop: 'Erstelle V1 -> kritisiere V1 -> erstelle V2'.",
+                    "Bei Code: 'Code für Lesbarkeit zuerst' + Tests verlangen."
+                ],
+                examples: [
+                    "<strong>Entscheidungsvorlage:</strong> 'Erstelle eine 1-seitige Entscheidungsvorlage für [Thema]. Kriterien: 3 Optionen, Bewertung nach Zeit/Impact/Risiko.'",
+                    "<strong>Schreibstil:</strong> 'Schreibe Version A (kurz), B (mittel), C (lang) für [Textart]. No-Gos: Floskeln.'"
+                ]
+            },
+            {
+                id: 2,
+                name: "Perplexity AI",
+                category: "Recherche",
+                icon: "🔎",
+                url: "https://www.perplexity.ai",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Login für Verlauf.",
+                strengths: "Liefert Antworten mit Fußnoten. Zugriff auf aktuelles Web.",
+                risks: "Bias der Quellen. KEINE Few-Shot-Beispiele im Prompt nutzen (verwirrt die Suche).",
+                template: `Ziel: Beantworte diese Entscheidungsfrage: [Frage].
+
+Kontext: [Warum wichtig, Region/Industrie].
+Scope:
+- Zeitraum: [z.B. 2023–heute]
+- Quelle: [z.B. akademisch, news, tech docs]
+- Ausschlüsse: [z.B. kein Marketing, kein Reddit]
+
+Aufgabe:
+1) Strukturierte Antwort (H2/H3).
+2) Tabelle: Option | Pro | Contra | Evidenz (Quelle)
+3) Offene Unsicherheiten.`,
+                powerMoves: [
+                    "Avoid Few-Shot: Gib KEINE Textbeispiele (sonst sucht er danach).",
+                    "Nutze Academic/Filter-Denken: Zeitraum explizit machen.",
+                    "Lass Quellen gegeneinander prüfen ('mind. 2 unabhängige Quellen')."
+                ],
+                examples: [
+                    "<strong>Vergleich:</strong> 'Vergleiche [Tool A] vs [Tool B] für [Use-Case]. Ausschluss: Hersteller-Marketing.'",
+                    "<strong>Studien-Suche:</strong> 'Finde aktuelle Studien zu [Thema] (ab 2020) und gib Kernaussage, Effektgröße, Limitationen.'"
+                ]
+            },
+            {
+                id: 3,
+                name: "Claude (Anthropic)",
+                category: "Text/Coding",
+                icon: "🧠",
+                url: "https://claude.ai",
+                cost: "Freemium",
+                grade: "12-13",
+                privacy: "Cloud-basiert. Constitutional AI.",
+                strengths: "Sehr nuancierte Sprache, riesiges Kontextfenster (Bücher/PDFs), stark im Coding.",
+                risks: "Strenge Sicherheitsfilter. Weniger Web-Browsing.",
+                template: `<role>Du bist [Rolle].</role>
+
+<context>
+[Kontext/Material/Constraints]
+</context>
+
+<instructions>
+1) [Aufgabe 1]
+2) [Aufgabe 2]
+Regeln:
+- Ton: [...]
+- Muss vermeiden: [...]
+</instructions>
+
+<output_format>
+[z.B. Markdown-Struktur + Tabelle]
+</output_format>
+
+<verification>
+Prüfe am Ende gegen Regeln und liste Annahmen.
+</verification>`,
+                powerMoves: [
+                    "XML-Tags (<...>) trennen Kontext und Instruktion sauber.",
+                    "Bei langen Inputs: Erst <context>, dann <instructions>.",
+                    "Fordere Alternativen: 'Erstelle 2 Varianten + wähle die beste'."
+                ],
+                examples: [
+                    "<strong>UX-Writing:</strong> '<role>UX-Writer</role> <instructions>Schreibe 12 Microcopy-Varianten für [Screen]. Jede ≤ 60 Zeichen.</instructions>'",
+                    "<strong>Analyse:</strong> '<context>[PDF Inhalt]</context> <instructions>Extrahiere die 3 Hauptthesen und finde logische Lücken.</instructions>'"
+                ]
+            },
+            {
+                id: 4,
+                name: "Midjourney",
+                category: "Bild/Video",
+                icon: "🎨",
+                url: "https://www.midjourney.com",
+                cost: "Paid",
+                grade: "11-13",
+                privacy: "Öffentlich auf Discord (Standard).",
+                strengths: "Höchste Bildqualität, kreativ, fotorealistisch.",
+                risks: "Bedienung über Discord. Urheberrechtsfragen.",
+                template: `[Subject], [Action/pose], [Environment], [Lighting], [Mood],
+[Style references (deskriptiv)], [Composition], [Materials]
+--ar [W:H] --s [stylize 0-1000] --chaos [0-100] --no [negatives]`,
+                powerMoves: [
+                    "Prompte auf ENGLISCH (bessere Ergebnisse).",
+                    "Stylize (--s): Niedrig = prompt-treu, hoch = künstlerisch.",
+                    "Chaos (--c): Für mehr Diversität in den 4 Vorschlägen."
+                ],
+                examples: [
+                    "<strong>Portrait:</strong> 'Ultra realistic portrait of a man, window light, 50mm lens look, crisp skin texture --ar 4:5 --s 75 --no text'",
+                    "<strong>Concept Art:</strong> 'Futuristic supermarket interior, clean minimal design, cinematic lighting, wide-angle --ar 16:9 --s 250'"
+                ]
+            },
+            {
+                id: 5,
+                name: "DeepL / DeepL Write",
+                category: "Text/Chat",
+                icon: "🗣️",
+                url: "https://www.deepl.com/write",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Free speichert evtl. Texte.",
+                strengths: "Beste Übersetzung, 'Write' verbessert Stil nuanciert.",
+                risks: "Kontextfehler bei Fachsprache möglich.",
+                template: `Aufgabe: Überarbeite den Text unten.
+
+Ziel:
+- Zielgruppe: [...]
+- Ton: [formal / locker / sachlich]
+- Stil: [klar, prägnant, aktiv]
+- Länge: [gleich / -20%]
+- Muss behalten: [Fakten, Namen]
+- Muss vermeiden: [Floskeln, Wiederholungen]
+
+Text:
+[einfügen]`,
+                powerMoves: [
+                    "Definiere 'Muss behalten' (Faktenanker) + 'Muss vermeiden'.",
+                    "Lass 2 Varianten erzeugen: 'Version A knapp, Version B warm'.",
+                    "Nutze es zum Lernen: Klicke auf Wörter für Synonyme."
+                ],
+                examples: [
+                    "<strong>Kürzen:</strong> 'Schreibe den Text 20% kürzer, behalte alle Zahlen, mache ihn direkter.'",
+                    "<strong>Academic Polish:</strong> 'Wandle diesen Entwurf in akademisches Englisch um. Vermeide umgangssprachliche Phrasen.'"
+                ]
+            },
+            {
+                id: 6,
+                name: "Canva (Magic Studio)",
+                category: "Präsentation",
+                icon: "🖼️",
+                url: "https://www.canva.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Cloud-Service.",
+                strengths: "Alles in einem: Layout, Bild, Text.",
+                risks: "Generischer Stock-Foto-Look.",
+                template: `Projekt: [z.B. Instagram Carousel / Pitch Deck]
+Ziel: [informieren/verkaufen]
+Zielgruppe: [...]
+Brand-Regeln: Farben [...], Schriftstil [...], Bildstil [...]
+Layout: [z.B. clean, viel Weißraum, 3 Spalten]
+Inhalt: [Bulletpoints + CTA]
+No-Gos: [zu verspielt, Stock-Klischees]
+Output: 3 Varianten (seriös / modern / bold)`,
+                powerMoves: [
+                    "Klare Layout-Constraints wirken stärker als poetische Texte.",
+                    "Fordere Varianten (A/B/C) statt einer Zufallslösung.",
+                    "Nutze 'Magic Edit' für lokale Bildänderungen."
+                ],
+                examples: [
+                    "<strong>Social Media:</strong> 'Erstelle ein Instagram Carousel über [Thema]. Stil: Minimalistisch, Beige-Töne, große Typografie.'",
+                    "<strong>Präsentation:</strong> 'Presentation about Baroque Poetry. Theme: Dark academia, dramatic fonts. 10 Slides.'"
+                ]
+            },
+            {
+                id: 7,
+                name: "GitHub Copilot",
+                category: "Coding",
+                icon: "⌨️",
+                url: "https://github.com/features/copilot",
+                cost: "Paid (Free for Students)",
+                grade: "12-13",
+                privacy: "Code-Snippets werden analysiert.",
+                strengths: "Kontext-aware Autocomplete, Chat im Editor.",
+                risks: "Vorschläge müssen geprüft werden (Security).",
+                template: `// GOAL: [Feature/Fix]
+// CONTEXT: [Datei/Modul], vorhandene Funktionen: [...]
+// STACK: [Language + Framework]
+// REQUIREMENTS:
+// - Correctness: [Edge cases]
+// - Tests: add/extend tests
+// - Style: idiomatic, readable
+// OUTPUT: Only code changes + tests.`,
+                powerMoves: [
+                    "Mache lokalen Kontext (Dateien) explizit.",
+                    "Kommentiere ZUERST, was passieren soll (Comment-Driven-Dev).",
+                    "Nutze den Chat für 'Explain this file' oder Refactoring."
+                ],
+                examples: [
+                    "<strong>Funktion:</strong> '// Q: How does this function handle edge cases? Explain line by line.'",
+                    "<strong>Test:</strong> '// Write a unit test for the function above, covering null inputs.'"
+                ]
+            },
+            {
+                id: 8,
+                name: "Gamma",
+                category: "Präsentation",
+                icon: "📊",
+                url: "https://gamma.app",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Cloud-basiert.",
+                strengths: "Komplette Decks in Sekunden. Gute Struktur.",
+                risks: "Inhalte oft oberflächlich.",
+                template: `Erstelle ein Deck für: [Audience].
+Ziel/Outcome: [Was sollen sie tun?]
+Ton: [z.B. klar, executive]
+Umfang: [z.B. 8 Slides]
+Struktur:
+1) Hook
+2) Problem
+3) Lösung (3 Punkte)
+4) Belege
+5) CTA
+Pflicht: 1 Tabelle + Key Takeaways.`,
+                powerMoves: [
+                    "Definiere Audience/Outcome/#Slides genau.",
+                    "Nutze die 'Edit with AI' Funktion für einzelne Karten.",
+                    "Kürze die Texte radikal nach der Generierung."
+                ],
+                examples: [
+                    "<strong>Referat:</strong> 'Präsentation über Globalisierung für Mitschüler (17J). Kritisch-analytisch. Fokus: Wirtschaftliche Abhängigkeit.'",
+                    "<strong>Pitch:</strong> 'Pitch Deck für eine Schülerfirma. Problem: Mülltrennung. Lösung: App.'"
+                ]
+            },
+            {
+                id: 9,
+                name: "Elicit",
+                category: "Recherche",
+                icon: "🔬",
+                url: "https://elicit.com",
+                cost: "Freemium",
+                grade: "12-13",
+                privacy: "Account nötig.",
+                strengths: "Findet & analysiert Paper. Matrix-View.",
+                risks: "Englisch dominiert.",
+                template: `Research question: [klar, z.B. "effects of X on Y"].
+
+Filter:
+- Year: [>= 2020]
+- Population: [...]
+- Study type: [RCT / meta-analysis]
+- Exclude: [opinion pieces]
+
+Output:
+1) Top 10 Papers
+2) Tabelle: Paper | Design | Sample | Outcome | Limitations`,
+                powerMoves: [
+                    "Nutze Filter in natürlicher Sprache ('published after 2020').",
+                    "Übersetze deutsche Forschungsfragen ins Englische (10x mehr Treffer).",
+                    "Nutze 'Extract data from PDFs' für eigene Quellen."
+                ],
+                examples: [
+                    "<strong>Effekte:</strong> 'What are the effects of social media usage on attention span in adolescents? Meta-analyses only.'",
+                    "<strong>Methodik:</strong> 'Find papers using qualitative interviews to study remote work challenges.'"
+                ]
+            },
+            {
+                id: 10,
+                name: "Suno / Udio",
+                category: "Bild/Video",
+                icon: "🎵",
+                url: "https://suno.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Login nötig.",
+                strengths: "Beeindruckende Songs (Text+Musik).",
+                risks: "Urheberrecht komplex. Kitschige Texte.",
+                template: `Style: [Genre], [Mood], [Era], [BPM], [Instruments], [Vocal type]
+
+Lyrics (Kontext + Struktur):
+[Topic/Story summary]
+[Intro]
+[Verse]
+[Chorus]
+[Bridge]`,
+                powerMoves: [
+                    "Gib Kontext direkt in die Lyrics-Box (nicht nur Style).",
+                    "Nutze englische Genre-Begriffe ('Synthwave', 'Lo-Fi').",
+                    "Udio: Nutze Tags und 'Instrumental Mode'."
+                ],
+                examples: [
+                    "<strong>Gedichtvertonung:</strong> 'Style: Dark Trap Beat, minor key, aggressive vocals. Lyrics: [Goethes Erlkönig Text]'",
+                    "<strong>Atmosphäre:</strong> 'Style: Cinematic ambient, slow build-up, ethereal vocals. Topic: Space travel.'"
+                ]
+            },
+            {
+                id: 11,
+                name: "Notion AI",
+                category: "Text/Chat",
+                icon: "📝",
+                url: "https://www.notion.so/product/ai",
+                cost: "Paid Add-on",
+                grade: "11-13",
+                privacy: "Daten bleiben im Workspace.",
+                strengths: "In Notizen integriert. Zusammenfassungen.",
+                risks: "Verleitet zur Passivität.",
+                template: `(AI Property / Autofill):
+Nutze nur Inhalte dieser Seite.
+Erzeuge: [z.B. 1-Satz-Summary ODER To-Dos].
+Format: [klar, Bulletpoints].
+Wenn Info fehlt: schreibe "UNBEKANNT".`,
+                powerMoves: [
+                    "Nutze 'AI Autofill' in Datenbanken für massive Zeitersparnis.",
+                    "Markiere Notizen -> 'Action Items finden'.",
+                    "Research Mode für Fragen über viele Dokumente hinweg."
+                ],
+                examples: [
+                    "<strong>Lernzettel:</strong> '/summarize as table: Columns Topic, Definition, Example.'",
+                    "<strong>Meeting:</strong> 'Liste alle offenen Fragen aus diesem Dokument auf.'"
+                ]
+            },
+            {
+                id: 12,
+                name: "Runway Gen-2",
+                category: "Bild/Video",
+                icon: "🎬",
+                url: "https://runwayml.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Cloud-Account.",
+                strengths: "Text-to-Video. Motion Brush.",
+                risks: "Hoher Rechenaufwand. Deprecated (Gen-3 kommt).",
+                template: `Frame (what we see): [Subject], [Env], [Lighting], [Style].
+Motion (what moves): [subject motion], [env motion].
+Camera: [shot type], [camera movement].
+Duration: [5s].
+Negative: no text, no warping, steady cam.`,
+                powerMoves: [
+                    "Trenne Frame (Bild) von Motion (Bewegung).",
+                    "Nutze englische Kamerabegriffe: 'Zoom in', 'Pan right', 'Tilt up'.",
+                    "Nutze Motion Brush für gezielte Bewegung."
+                ],
+                examples: [
+                    "<strong>Abstrakt:</strong> 'Frame: Melting clock on sand dune. Motion: Slow drift. Camera: Pan right.'",
+                    "<strong>Action:</strong> 'Frame: Cyberpunk car in rain. Motion: Fast forward driving. Camera: Tracking shot.'"
+                ]
+            },
+            {
+                id: 13,
+                name: "Gemini 3 Nano Banana Pro",
+                category: "Bild/Video",
+                icon: "🍌",
+                url: "https://gemini.google.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Google Account.",
+                strengths: "Hervorragendes Text-Rendering in Bildern. Hohe Prompt-Treue (Imagen 3).",
+                risks: "Teilweise strenge Sicherheitsfilter.",
+                template: `Subject: [klar, konkret]
+Scene: [Ort, Zeit, Stimmung]
+Style: [fotorealistisch / 3D / Claymation]
+Action: [was passiert gerade]
+Text: [Schild mit Aufschrift 'Wort']
+Composition: [Weitwinkel, Nahaufnahme]
+Avoid: watermarks, blur, distorted fingers`,
+                powerMoves: [
+                    "Text-Rendering nutzen: 'A neon sign saying [TEXT]' funktioniert hier sehr gut.",
+                    "Natürliche Sprache: Du kannst in ganzen Sätzen beschreiben, was im Bild passieren soll.",
+                    "Seitenverhältnis im Prompt nennen: 'im Breitbildformat' oder '16:9'."
+                ],
+                examples: [
+                    "<strong>Poster:</strong> 'Ein Filmplakat im 80er Jahre Stil für einen Sci-Fi Film mit dem Titel 'FUTURE SCHOOL'. Neonfarben.'",
+                    "<strong>Symbolbild:</strong> 'Ein fotorealistisches Bild einer futuristischen Schule aus Glas und Pflanzen. Hell, freundlich, blauer Himmel. Weitwinkel.'"
+                ]
+            },
+            {
+                id: 14,
+                name: "Gemini (Google)",
+                category: "Text/Chat",
+                icon: "✨",
+                url: "https://gemini.google.com",
+                cost: "Freemium",
+                grade: "11-13",
+                privacy: "Google Account.",
+                strengths: "Workspace-Integration (Docs/Drive). Multimodal.",
+                risks: "Datenschutz (Private vs Edu).",
+                template: `Context: [Daten/Notizen/Constraints]
+Task: [konkreter Auftrag]
+Output: [Format + Länge]
+Quality bar: [Kriterien + No-Gos]
+Verify: [Selbstcheck]`,
+                powerMoves: [
+                    "Multimodal: Lade Bilder/PDFs hoch ('Basierend auf diesem Tafelbild...').",
+                    "Integration: 'Finde in meinem Drive das Dokument X'.",
+                    "Nutze 'Grounding' (G-Symbol) gegen Halluzinationen."
+                ],
+                examples: [
+                    "<strong>Video-Analyse:</strong> 'Fasse dieses Youtube-Video (Link) zusammen und erstelle ein Quiz.'",
+                    "<strong>Cluster:</strong> 'Context: 12 Feedbacks. Task: Clustere in 5 Themen. Output: Tabelle.'"
+                ]
+            }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const gridContainer = document.getElementById('tools-grid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const modal = document.getElementById('detail-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        
+        // --- HELPERS ---
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector(`button[onclick="copyToClipboard('${elementId}')"]`);
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                setTimeout(() => btn.innerText = originalText, 2000);
+            });
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderTools(filter) {
+            gridContainer.innerHTML = '';
+            const filteredData = filter === 'all' 
+                ? toolsData 
+                : toolsData.filter(t => t.category.includes(filter) || (filter === 'Bild/Video' && (t.category.includes('Bild') || t.category.includes('Video') || t.category.includes('Audio'))));
+
+            filteredData.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:shadow-md transition cursor-pointer flex flex-col h-full group relative';
+                card.onclick = () => openModal(tool);
+
+                const costColor = tool.cost.includes('Free') ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl group-hover:scale-110 transition-transform duration-300">${tool.icon}</div>
+                        <div class="flex gap-2">
+                             <a href="${tool.url}" target="_blank" onclick="event.stopPropagation()" class="bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-teal-600 px-2 py-1 rounded-full text-xs font-bold transition flex items-center justify-center h-6 w-6" title="Direkt zum Tool">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <span class="text-xs font-bold px-2 py-1 rounded-full ${costColor} h-6 flex items-center">${tool.cost}</span>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-800 mb-1">${tool.name}</h3>
+                    <p class="text-xs text-teal-600 font-semibold uppercase tracking-wide mb-3">${tool.category}</p>
+                    <p class="text-stone-600 text-sm mb-4 line-clamp-3 flex-grow">${tool.strengths}</p>
+                    <div class="mt-auto pt-4 border-t border-stone-100 flex justify-between items-center text-xs text-stone-400">
+                        <span>Kl. ${tool.grade}</span>
+                        <span class="group-hover:text-teal-600 font-medium flex items-center gap-1">Prompt Kit <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        function openModal(tool) {
+            document.getElementById('modal-icon').textContent = tool.icon;
+            document.getElementById('modal-title').textContent = tool.name;
+            document.getElementById('modal-category').textContent = tool.category;
+            document.getElementById('modal-cost').textContent = tool.cost;
+            document.getElementById('modal-grade').textContent = tool.grade;
+            document.getElementById('modal-privacy').textContent = tool.privacy;
+            document.getElementById('modal-strengths').textContent = tool.strengths;
+            document.getElementById('modal-risks').textContent = tool.risks;
+            
+            // Render Prompt Kit
+            document.getElementById('modal-template').textContent = tool.template;
+            
+            const pmList = document.getElementById('modal-powermoves');
+            pmList.innerHTML = tool.powerMoves.map(pm => `<li>${pm}</li>`).join('');
+            
+            const exList = document.getElementById('modal-examples');
+            exList.innerHTML = tool.examples.map(ex => `<li class="bg-emerald-100/50 p-2 rounded border border-emerald-100">${ex}</li>`).join('');
+
+            document.getElementById('modal-link').href = tool.url;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('modal-content').classList.remove('scale-95');
+                document.getElementById('modal-content').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            document.getElementById('modal-content').classList.remove('scale-100');
+            document.getElementById('modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- EVENT LISTENERS ---
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-stone-800', 'text-white');
+                    b.classList.add('bg-white', 'text-stone-600');
+                });
+                btn.classList.remove('bg-white', 'text-stone-600');
+                btn.classList.add('bg-stone-800', 'text-white');
+                renderTools(btn.getAttribute('data-filter'));
+            });
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => { renderTools('all'); });
+    </script>
+</body>
+</html>
