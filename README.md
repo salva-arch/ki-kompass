@@ -16,14 +16,17 @@
 ## 📸 Screenshots
 
 ### Tool Explorer
-![KI-Kompass Tool Explorer](screenshots/tool-explorer.png)
+![KI-Kompass Tool Explo<img width="1716" height="867" alt="ki-kompass" src="https://github.com/user-attachments/assets/b46ececd-0c5c-4fee-bef3-b830047febe1" />
+rer](screenshots/tool-explorer.png)
 *Browse AI tools by category with pricing and grade-level indicators*
 
-### Tool Detail View
+### Tool Detail View<img width="1716" height="867" alt="ki-kompass_moves" src="https://github.com/user-attachments/assets/f0a123dd-1151-4b70-b0fc-787e608c250e" />
+
 ![Tool Detail with Prompt Evolution](screenshots/tool-detail.png)
 *Each tool includes strengths, risks, and the unique "Prompt Evolution" comparison*
 
-### Prompt Quality Comparison
+### Prompt Quality Comparison<img width="1716" height="867" alt="ki-kompass_prompt" src="https://github.com/user-attachments/assets/66f3a194-a013-4577-9495-151ffb5d1d71" />
+
 ![Standard vs High Quality Prompt](screenshots/prompt-comparison.png)
 *Side-by-side comparison showing the difference between basic and professional prompts*
 
