@@ -7,7 +7,7 @@
 ![Status](https://img.shields.io/badge/status-live-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**🔗 Live:** [kompass.neudenken.io](https://kompass.neudenken.io)
+**🔗 Live:** [kompass.neudenken.io](https://ki-kompass.neudenken.io)
 
 **🇩🇪 Language:** German (target audience: German-speaking students, grades 11-13)
 
