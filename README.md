@@ -1,78 +1,161 @@
 # KI-Kompass 🧭
 
-> Your interactive guide through the AI landscape – find the right tools and concepts for your needs.
+> Navigate the AI landscape – a curated guide for students to understand and use AI tools effectively.
 
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![Status](https://img.shields.io/badge/status-active-green)
+![Status](https://img.shields.io/badge/status-live-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-## 🎯 Problem
+**🔗 Live:** [kompass.neudenken.io](https://kompass.neudenken.io)
 
-The AI tool landscape is overwhelming. New tools launch daily, categories blur together, and it's hard to know where to start – whether you're a complete beginner or a professional looking for specific capabilities.
+**🇩🇪 Language:** German (target audience: German-speaking students, grades 11-13)
 
-## 💡 Solution
-
-An interactive web application that:
-- **Guides users** through AI concepts step by step
-- **Categorizes tools** by use case and skill level
-- **Recommends** the right starting point based on your goals
-- **Explains** complex concepts in simple terms
-
-## ✨ Features
-
-- 🎯 Interactive quiz to find your starting point
-- 📚 Curated tool database with honest reviews
-- 🗺️ Visual concept maps
-- 🎓 Learning paths from beginner to advanced
-- 🔍 Filter by: use case, price, skill level
-- 🌐 Available in German and English
-
-## 🚀 Quick Start
-```bash
-# Clone the repository
-git clone https://github.com/salva-arch/ki-kompass.git
-cd ki-kompass
-
-# Open in browser (no build required)
-open index.html
-
-# Or serve locally
-npx serve .
-```
+---
 
 ## 📸 Screenshots
 
-[TODO: Add screenshots of the compass interface]
+### Tool Explorer
+![KI-Kompass Tool Explorer](screenshots/tool-explorer.png)
+*Browse AI tools by category with pricing and grade-level indicators*
 
-## 🏗 Structure
-```
-├── index.html          # Main entry point
-├── css/
-│   └── styles.css      # Styling
-├── js/
-│   ├── app.js          # Main application logic
-│   ├── quiz.js         # Recommendation quiz
-│   └── data.js         # Tool & concept database
-└── assets/
-    └── icons/          # Tool logos & icons
-```
+### Tool Detail View
+![Tool Detail with Prompt Evolution](screenshots/tool-detail.png)
+*Each tool includes strengths, risks, and the unique "Prompt Evolution" comparison*
+
+### Prompt Quality Comparison
+![Standard vs High Quality Prompt](screenshots/prompt-comparison.png)
+*Side-by-side comparison showing the difference between basic and professional prompts*
+
+---
+
+## 🎯 Problem
+
+Students are overwhelmed by AI tools:
+- Dozens of tools, unclear which to use for what
+- No guidance on how to get quality results
+- Copy-paste prompts lead to generic, detectable outputs
+- Teachers can immediately spot low-effort AI usage
+
+## 💡 Solution
+
+A curated navigation system that:
+- **Categorizes AI tools** by use case (Research, Coding, Creative, etc.)
+- **Shows strengths & risks** of each tool honestly
+- **Teaches prompt engineering** through direct comparison
+- **Provides ready-to-use templates** for real school tasks
+
+---
+
+## ✨ Key Features
+
+### 🗂️ Tool Explorer
+Browse curated AI tools with filters:
+- **Text & Chat** – ChatGPT, Claude
+- **Recherche** – Perplexity AI
+- **Bild & Video** – Midjourney, DALL-E
+- **Coding** – GitHub Copilot, Cursor
+- **Präsentation** – Gamma, Beautiful.ai
+
+### 📊 Tool Profiles
+Each tool includes:
+| Info | Example |
+|------|---------|
+| Pricing | Free / Freemium / Paid |
+| Grade Level | Kl. 11-13 |
+| Account Required | Yes / No |
+| Strengths | "Allrounder für Textproduktion" |
+| Risks | "Halluzinationen bei Fakten" |
+
+### ✨ Prompt Evolution (Unique Feature!)
+Side-by-side comparison showing:
+
+| Standard (Anfänger) | High Quality (Profi) |
+|---------------------|----------------------|
+| "Schreibe eine Analyse zu Woyzeck." | Rolle: Du bist erfahrene Lehrkraft der Oberstufe. Ziel: Erstelle einen Erwartungshorizont für eine Szenenanalyse... |
+
+Students immediately see why their prompts get mediocre results – and how to fix it.
+
+### 🚀 Power Moves
+Pro tips for each tool:
+- "Erzwinge ein Output-Format + Checkliste"
+- "2-Pass-Loop: Erstelle V1 → kritisiere V1 → erstelle V2"
+- "Bei Code: 'Code für Lesbarkeit zuerst' + Tests verlangen"
+
+### 💡 Praxis-Beispiele
+Ready-to-use prompt templates:
+- **Entscheidungsvorlage:** "Erstelle eine 1-seitige Entscheidungsvorlage für [Thema]..."
+- **Schreibstil:** "Schreibe Version A (kurz), B (mittel), C (lang)..."
+
+---
+
+## 🎓 Target Audience
+
+| Audience | Use Case |
+|----------|----------|
+| **Students (Kl. 11-13)** | Learn effective AI usage for school work |
+| **Teachers** | Understand what students can do with AI |
+| **Parents** | Guide children's AI tool usage |
+
+---
+
+## 🛠 Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Frontend | HTML5, CSS3, JavaScript |
+| Styling | Custom CSS (responsive) |
+| Data | Static JSON |
+| Hosting | Self-hosted |
+
+---
+
+## 💡 Core Philosophy
+
+> **"KI als Werkzeug verstehen, nicht als Ersatz."**
+> 
+> *Understand AI as a tool, not a replacement.*
+
+The goal is not to help students cheat, but to teach them prompt engineering – a skill they'll need in their future careers.
+
+---
 
 ## 🗺 Roadmap
 
-- [ ] Tool comparison matrix
-- [ ] Personalized learning path generator
-- [ ] Community ratings & reviews
-- [ ] API for embedding in other sites
-- [ ] Newsletter with weekly AI tool updates
-- [ ] Integration tutorials for popular tools
+- [ ] English language version
+- [ ] More tools (Gemini, Copilot, etc.)
+- [ ] Subject-specific guides (Math, History, Languages)
+- [ ] Teacher dashboard
+- [ ] Prompt template library (downloadable)
+- [ ] Dark mode
+- [ ] User feedback system
 
-## 🎯 Who Is This For?
+---
 
-- **Beginners** wanting to understand AI without the jargon
-- **Professionals** looking for the right tool for specific tasks
-- **Managers** evaluating AI solutions for their teams
-- **Educators** teaching AI literacy
+## 📁 Project Structure
+```
+├── index.html              # Landing page
+├── tools.html              # Tool Explorer
+├── guide.html              # User guide
+├── css/
+│   └── styles.css          # Responsive styling
+├── js/
+│   ├── app.js              # Main application
+│   ├── tools.js            # Tool data & filtering
+│   └── modal.js            # Tool detail modals
+├── data/
+│   └── tools.json          # Tool database
+└── assets/
+    └── icons/              # Tool logos
+```
+
+---
+
+## 🤝 Background
+
+Built to help students navigate the AI landscape responsibly. As a retail manager transitioning into AI/automation, I saw firsthand how people struggle with prompting. This tool teaches the skill that makes the difference between "AI wrote this" and "AI helped me create this."
+
+---
 
 ## 📄 License
 
