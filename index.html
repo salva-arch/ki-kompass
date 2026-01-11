@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KI-Kompass</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Design: Calm Harmony -->
     <!-- V13 Update: 
          - Name Correction: "Google ImageFX" -> "Google Nano Banana Pro".
@@ -18,24 +24,127 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
-        
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f5f5f4; /* stone-100 */
-            color: #1c1917; /* stone-900 */
+            background-color: #f5f5f4;
+            /* stone-100 */
+            color: #1c1917;
+            /* stone-900 */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Body */
+        .dark body,
+        html.dark body {
+            background-color: #1c1917;
+            /* stone-900 */
+            color: #f5f5f4;
+            /* stone-100 */
         }
 
         /* Custom Scrollbar */
-        .modal-scroll::-webkit-scrollbar { width: 8px; }
-        .modal-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
-        .modal-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-        .modal-scroll::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+        .modal-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 4px;
+        }
+
+        .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+
+        /* Dark Mode Scrollbar */
+        .dark .modal-scroll::-webkit-scrollbar-track {
+            background: #292524;
+        }
+
+        .dark .modal-scroll::-webkit-scrollbar-thumb {
+            background: #57534e;
+        }
+
+        .dark .modal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #78716c;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease, background 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle .sun-icon,
+        .theme-toggle .moon-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle .sun-icon {
+            left: 8px;
+            color: white;
+            opacity: 1;
+        }
+
+        .theme-toggle .moon-icon {
+            right: 8px;
+            color: white;
+            opacity: 0.5;
+        }
+
+        .dark .theme-toggle {
+            background: linear-gradient(to right, #4338ca, #6366f1);
+        }
+
+        .dark .theme-toggle::before {
+            transform: translateX(28px);
+            background: #1e1b4b;
+        }
+
+        .dark .theme-toggle .sun-icon {
+            opacity: 0.5;
+        }
+
+        .dark .theme-toggle .moon-icon {
+            opacity: 1;
+        }
 
         /* Prompt Styles */
         .prompt-template {
             font-family: 'JetBrains Mono', monospace;
-            background-color: #1e293b; /* slate-800 */
-            color: #e2e8f0; /* slate-200 */
+            background-color: #1e293b;
+            /* slate-800 */
+            color: #e2e8f0;
+            /* slate-200 */
             border-radius: 0.5rem;
             position: relative;
             font-size: 0.85rem;
@@ -45,9 +154,12 @@
 
         .standard-prompt-box {
             font-family: 'Inter', sans-serif;
-            background-color: #fef2f2; /* red-50 */
-            color: #7f1d1d; /* red-900 */
-            border-left: 4px solid #f87171; /* red-400 */
+            background-color: #fef2f2;
+            /* red-50 */
+            color: #7f1d1d;
+            /* red-900 */
+            border-left: 4px solid #f87171;
+            /* red-400 */
             padding: 1rem;
             font-size: 0.9rem;
             position: relative;
@@ -62,7 +174,12 @@
             border-radius: 8px;
             background-color: white;
             padding: 4px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .tool-logo {
+            background-color: #292524;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .modal-logo {
@@ -72,43 +189,68 @@
             border-radius: 12px;
             background-color: white;
             padding: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .modal-logo {
+            background-color: #292524;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         /* Watermark */
         .watermark {
-            position: fixed; bottom: 24px; right: 24px;
-            font-size: 1.1rem; font-weight: 700;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: rgba(168, 162, 158, 0.25);
-            pointer-events: none; z-index: 9999;
-            user-select: none; letter-spacing: 0.05em;
+            pointer-events: none;
+            z-index: 9999;
+            user-select: none;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
+
 <body class="flex flex-col min-h-screen">
 
     <div class="watermark">Docimo 2026</div>
 
     <!-- Navigation -->
-    <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+    <header
+        class="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <span class="text-2xl">🧭</span>
-                <h1 class="text-xl font-bold text-stone-800 tracking-tight">KI-Kompass</h1>
+                <h1 class="text-xl font-bold text-stone-800 dark:text-stone-100 tracking-tight">KI-Kompass</h1>
             </div>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#tools" class="text-stone-600 hover:text-teal-600 font-medium transition">Tools entdecken</a>
-                <a href="#guide" class="text-stone-600 hover:text-teal-600 font-medium transition">Dein Guide</a>
-            </nav>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#tools"
+                        class="text-stone-600 dark:text-stone-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition">Tools
+                        entdecken</a>
+                    <a href="#guide"
+                        class="text-stone-600 dark:text-stone-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition">Dein
+                        Guide</a>
+                </nav>
+                <!-- Dark Mode Toggle -->
+                <button class="theme-toggle" id="theme-toggle" aria-label="Dark Mode umschalten">
+                    <i class="fas fa-sun sun-icon"></i>
+                    <i class="fas fa-moon moon-icon"></i>
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Hero -->
-    <section class="bg-stone-50 py-12 px-4">
+    <section class="bg-stone-50 dark:bg-stone-800 py-12 px-4 transition-colors duration-300">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-stone-800 mb-4">KI als Werkzeug verstehen, nicht als Ersatz.</h2>
-            <p class="text-lg text-stone-600 leading-relaxed max-w-2xl mx-auto">
-                Willkommen im Navigationssystem für deinen Schulalltag. Hier findest du geprüfte Tools für Recherche, Coding und Kreativität – inklusive optimierter Prompts.
+            <h2 class="text-3xl md:text-4xl font-bold text-stone-800 dark:text-stone-100 mb-4">KI als Werkzeug
+                verstehen, nicht als Ersatz.</h2>
+            <p class="text-lg text-stone-600 dark:text-stone-300 leading-relaxed max-w-2xl mx-auto">
+                Willkommen im Navigationssystem für deinen Schulalltag. Hier findest du geprüfte Tools für Recherche,
+                Coding und Kreativität – inklusive optimierter Prompts.
             </p>
         </div>
     </section>
@@ -119,17 +261,30 @@
         <!-- SECTION 1: Tool Explorer -->
         <section id="tools" class="scroll-mt-20">
             <div class="mb-8">
-                <h3 class="text-2xl font-bold text-stone-800 mb-2">🔭 Tool-Explorer</h3>
-                <p class="text-stone-600 mb-6">Klicke auf eine Karte, um den <strong>Qualitäts-Sprung</strong> im Prompting zu sehen.</p>
-                
+                <h3 class="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">🔭 Tool-Explorer</h3>
+                <p class="text-stone-600 dark:text-stone-300 mb-6">Klicke auf eine Karte, um den
+                    <strong>Qualitäts-Sprung</strong> im Prompting zu sehen.</p>
+
                 <!-- Filters -->
                 <div class="flex flex-wrap gap-2 mb-6" id="filter-container">
-                    <button class="filter-btn active bg-stone-800 text-white px-4 py-2 rounded-full text-sm font-medium transition shadow-sm hover:bg-stone-700" data-filter="all">Alle</button>
-                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Text/Chat">💬 Text & Chat</button>
-                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Recherche">🔍 Recherche</button>
-                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Bild/Video">🎨 Bild & Video</button>
-                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Coding">💻 Coding</button>
-                    <button class="filter-btn bg-white text-stone-600 border border-stone-200 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 hover:text-teal-600" data-filter="Präsentation">📊 Präsentation</button>
+                    <button
+                        class="filter-btn active bg-stone-800 dark:bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-medium transition shadow-sm hover:bg-stone-700 dark:hover:bg-teal-500"
+                        data-filter="all">Alle</button>
+                    <button
+                        class="filter-btn bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-600 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                        data-filter="Text/Chat">💬 Text & Chat</button>
+                    <button
+                        class="filter-btn bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-600 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                        data-filter="Recherche">🔍 Recherche</button>
+                    <button
+                        class="filter-btn bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-600 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                        data-filter="Bild/Video">🎨 Bild & Video</button>
+                    <button
+                        class="filter-btn bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-600 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                        data-filter="Coding">💻 Coding</button>
+                    <button
+                        class="filter-btn bg-white dark:bg-stone-700 text-stone-600 dark:text-stone-200 border border-stone-200 dark:border-stone-600 px-4 py-2 rounded-full text-sm font-medium transition hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                        data-filter="Präsentation">📊 Präsentation</button>
                 </div>
             </div>
 
@@ -139,90 +294,117 @@
         </section>
 
         <!-- SECTION 2: Guide -->
-        <section id="guide" class="scroll-mt-20 space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-stone-100">
+        <section id="guide"
+            class="scroll-mt-20 space-y-8 bg-white dark:bg-stone-800 p-8 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-700 transition-colors duration-300">
             <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-2xl font-bold text-stone-800">🧠 Die 3 Hebel für bessere Ergebnisse</h3>
+                <h3 class="text-2xl font-bold text-stone-800 dark:text-stone-100">🧠 Die 3 Hebel für bessere Ergebnisse
+                </h3>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="p-4 bg-stone-50 rounded-lg">
-                    <div class="font-bold text-teal-700 mb-1">1. Kontext ist King</div>
-                    <p class="text-sm text-stone-600">Sag nicht "Schreibe einen Text", sondern "Schreibe als Lehrkraft der Oberstufe zum Thema Strukturwandel".</p>
+                <div class="p-4 bg-stone-50 dark:bg-stone-700 rounded-lg transition-colors duration-300">
+                    <div class="font-bold text-teal-700 dark:text-teal-400 mb-1">1. Kontext ist King</div>
+                    <p class="text-sm text-stone-600 dark:text-stone-300">Sag nicht "Schreibe einen Text", sondern
+                        "Schreibe als Lehrkraft der Oberstufe zum Thema Strukturwandel".</p>
                 </div>
-                <div class="p-4 bg-stone-50 rounded-lg">
-                    <div class="font-bold text-teal-700 mb-1">2. Format erzwingen</div>
-                    <p class="text-sm text-stone-600">Verlange Tabellen, Checklisten oder Markdown. Das zwingt die KI zur Struktur und verhindert "Gelaber".</p>
+                <div class="p-4 bg-stone-50 dark:bg-stone-700 rounded-lg transition-colors duration-300">
+                    <div class="font-bold text-teal-700 dark:text-teal-400 mb-1">2. Format erzwingen</div>
+                    <p class="text-sm text-stone-600 dark:text-stone-300">Verlange Tabellen, Checklisten oder Markdown.
+                        Das zwingt die KI zur Struktur und verhindert "Gelaber".</p>
                 </div>
-                <div class="p-4 bg-stone-50 rounded-lg">
-                    <div class="font-bold text-teal-700 mb-1">3. Sprache wechseln</div>
-                    <p class="text-sm text-stone-600">Bild-KIs und Coding-Tools denken auf Englisch besser. Übersetze den Prompt für 20% mehr Qualität.</p>
+                <div class="p-4 bg-stone-50 dark:bg-stone-700 rounded-lg transition-colors duration-300">
+                    <div class="font-bold text-teal-700 dark:text-teal-400 mb-1">3. Sprache wechseln</div>
+                    <p class="text-sm text-stone-600 dark:text-stone-300">Bild-KIs und Coding-Tools denken auf Englisch
+                        besser. Übersetze den Prompt für 20% mehr Qualität.</p>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- Detailed Modal -->
-    <div id="detail-modal" class="fixed inset-0 bg-stone-900/60 hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[95vh]" id="modal-content">
-            
+    <div id="detail-modal"
+        class="fixed inset-0 bg-stone-900/60 dark:bg-black/70 hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+        <div class="bg-white dark:bg-stone-800 w-full max-w-5xl rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[95vh]"
+            id="modal-content">
+
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-6 border-b border-stone-100 bg-stone-50 rounded-t-2xl">
+            <div
+                class="flex items-center justify-between p-6 border-b border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 rounded-t-2xl">
                 <div class="flex items-center gap-4">
                     <!-- Dynamic Logo -->
                     <img id="modal-logo" src="" alt="Tool Logo" class="modal-logo">
                     <div>
-                        <h3 id="modal-title" class="text-2xl font-bold text-stone-900 leading-none"></h3>
-                        <span id="modal-category" class="inline-block mt-1 text-xs font-semibold text-teal-700 uppercase tracking-wider"></span>
+                        <h3 id="modal-title" class="text-2xl font-bold text-stone-900 dark:text-stone-100 leading-none">
+                        </h3>
+                        <span id="modal-category"
+                            class="inline-block mt-1 text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wider"></span>
                     </div>
                 </div>
-                <button id="close-modal" class="text-stone-400 hover:text-stone-700 transition p-2 rounded-full hover:bg-stone-200">
+                <button id="close-modal"
+                    class="text-stone-400 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition p-2 rounded-full hover:bg-stone-200 dark:hover:bg-stone-700">
                     <i class="fas fa-times text-2xl"></i>
                 </button>
             </div>
-            
+
             <!-- Modal Body -->
             <div class="p-6 overflow-y-auto modal-scroll space-y-8">
-                
+
                 <!-- 1. Stats & Description -->
                 <div class="grid md:grid-cols-3 gap-6 text-sm">
                     <div class="md:col-span-1 space-y-2">
-                        <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600 flex items-center">
+                        <div
+                            class="bg-stone-100 dark:bg-stone-700 px-3 py-1 rounded border border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300 flex items-center">
                             <i class="fas fa-euro-sign w-6"></i> <span id="modal-cost" class="font-medium"></span>
                         </div>
-                        <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600 flex items-center">
-                            <i class="fas fa-graduation-cap w-6"></i> Kl. <span id="modal-grade" class="font-medium"></span>
+                        <div
+                            class="bg-stone-100 dark:bg-stone-700 px-3 py-1 rounded border border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300 flex items-center">
+                            <i class="fas fa-graduation-cap w-6"></i> Kl. <span id="modal-grade"
+                                class="font-medium"></span>
                         </div>
-                        <div class="bg-stone-100 px-3 py-1 rounded border border-stone-200 text-stone-600 flex items-center">
-                             <i class="fas fa-shield-alt w-6"></i> <span id="modal-privacy" class="truncate"></span>
+                        <div
+                            class="bg-stone-100 dark:bg-stone-700 px-3 py-1 rounded border border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300 flex items-center">
+                            <i class="fas fa-shield-alt w-6"></i> <span id="modal-privacy" class="truncate"></span>
                         </div>
                     </div>
                     <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                        <div><h4 class="font-bold text-stone-800 mb-1">Stärken</h4><p id="modal-strengths" class="text-stone-600 text-xs leading-relaxed"></p></div>
-                        <div><h4 class="font-bold text-stone-800 mb-1">Risiken</h4><p id="modal-risks" class="text-stone-600 text-xs leading-relaxed"></p></div>
+                        <div>
+                            <h4 class="font-bold text-stone-800 dark:text-stone-100 mb-1">Stärken</h4>
+                            <p id="modal-strengths" class="text-stone-600 dark:text-stone-300 text-xs leading-relaxed">
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-stone-800 dark:text-stone-100 mb-1">Risiken</h4>
+                            <p id="modal-risks" class="text-stone-600 dark:text-stone-300 text-xs leading-relaxed"></p>
+                        </div>
                     </div>
                 </div>
 
-                <hr class="border-stone-100">
+                <hr class="border-stone-100 dark:border-stone-700">
 
                 <!-- 2. PROMPT EVOLUTION (Comparison) -->
                 <div>
-                    <h3 class="text-lg font-bold text-stone-800 mb-4">📈 Der Qualitäts-Check: Prompt Evolution</h3>
-                    
+                    <h3 class="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4">📈 Der Qualitäts-Check: Prompt
+                        Evolution</h3>
+
                     <div class="grid md:grid-cols-5 gap-6">
-                        
+
                         <!-- LEFT: STANDARD (2/5 width) -->
                         <div class="md:col-span-2">
-                            <div class="flex items-center gap-2 mb-2 text-rose-700 font-bold text-xs uppercase tracking-wide">
+                            <div
+                                class="flex items-center gap-2 mb-2 text-rose-700 dark:text-rose-400 font-bold text-xs uppercase tracking-wide">
                                 <i class="fas fa-times-circle"></i> Standard (Anfänger)
                             </div>
-                            <div class="standard-prompt-box flex flex-col justify-between">
+                            <div
+                                class="standard-prompt-box dark:bg-rose-950 dark:text-rose-200 dark:border-rose-800 flex flex-col justify-between">
                                 <div>
                                     <p id="modal-standard-prompt" class="italic font-medium text-lg mb-4"></p>
                                 </div>
                                 <div>
-                                    <div class="border-t border-rose-200 pt-2 text-xs text-rose-800 font-bold mb-1">
+                                    <div
+                                        class="border-t border-rose-200 dark:border-rose-700 pt-2 text-xs text-rose-800 dark:text-rose-300 font-bold mb-1">
                                         Das Problem:
                                     </div>
-                                    <p id="modal-standard-critique" class="text-xs text-rose-700 leading-relaxed"></p>
+                                    <p id="modal-standard-critique"
+                                        class="text-xs text-rose-700 dark:text-rose-300 leading-relaxed"></p>
                                 </div>
                             </div>
                         </div>
@@ -230,14 +412,16 @@
                         <!-- RIGHT: HIGH QUALITY (3/5 width) -->
                         <div class="md:col-span-3">
                             <div class="flex justify-between items-center mb-2">
-                                <div class="flex items-center gap-2 text-teal-700 font-bold text-xs uppercase tracking-wide">
+                                <div
+                                    class="flex items-center gap-2 text-teal-700 dark:text-teal-400 font-bold text-xs uppercase tracking-wide">
                                     <i class="fas fa-check-circle"></i> High Quality (Profi)
                                 </div>
-                                <span class="text-xs text-stone-400 italic">Klick Copy →</span>
+                                <span class="text-xs text-stone-400 dark:text-stone-500 italic">Klick Copy →</span>
                             </div>
                             <div class="prompt-template p-4 rounded-md shadow-inner relative group h-full">
                                 <pre id="modal-template" class="whitespace-pre-wrap"></pre>
-                                <button onclick="copyToClipboard('modal-template')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2 py-1 rounded opacity-50 group-hover:opacity-100 transition">
+                                <button onclick="copyToClipboard('modal-template')"
+                                    class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2 py-1 rounded opacity-50 group-hover:opacity-100 transition">
                                     Copy
                                 </button>
                             </div>
@@ -249,16 +433,21 @@
                 <!-- 3. STRATEGY & EXAMPLES -->
                 <div class="grid md:grid-cols-2 gap-6">
                     <!-- Power Moves -->
-                    <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
-                        <h4 class="font-bold text-indigo-900 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                    <div
+                        class="bg-indigo-50 dark:bg-indigo-950 p-5 rounded-xl border border-indigo-100 dark:border-indigo-900">
+                        <h4
+                            class="font-bold text-indigo-900 dark:text-indigo-200 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
                             <i class="fas fa-rocket"></i> Power Moves
                         </h4>
-                        <ul id="modal-powermoves" class="text-sm text-indigo-800 space-y-2 list-disc list-inside"></ul>
+                        <ul id="modal-powermoves"
+                            class="text-sm text-indigo-800 dark:text-indigo-300 space-y-2 list-disc list-inside"></ul>
                     </div>
 
                     <!-- Examples -->
-                    <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
-                        <h4 class="font-bold text-emerald-900 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                    <div
+                        class="bg-emerald-50 dark:bg-emerald-950 p-5 rounded-xl border border-emerald-100 dark:border-emerald-900">
+                        <h4
+                            class="font-bold text-emerald-900 dark:text-emerald-200 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
                             <i class="fas fa-lightbulb"></i> Praxis-Beispiele
                         </h4>
                         <ul id="modal-examples" class="text-sm text-emerald-800 space-y-3"></ul>
@@ -266,11 +455,14 @@
                 </div>
 
             </div>
-            
+
             <!-- Modal Footer -->
-            <div class="p-5 border-t border-stone-100 bg-stone-50 rounded-b-2xl flex justify-between items-center">
-                <span class="text-xs text-stone-500">Hinweis: Links führen zu externen Anbietern.</span>
-                <a id="modal-link" href="#" target="_blank" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 shadow-md flex items-center gap-2 text-sm">
+            <div
+                class="p-5 border-t border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 rounded-b-2xl flex justify-between items-center">
+                <span class="text-xs text-stone-500 dark:text-stone-400">Hinweis: Links führen zu externen
+                    Anbietern.</span>
+                <a id="modal-link" href="#" target="_blank"
+                    class="bg-stone-800 dark:bg-teal-600 hover:bg-stone-900 dark:hover:bg-teal-500 text-white font-bold py-2 px-6 rounded-lg transition transform hover:scale-105 shadow-md flex items-center gap-2 text-sm">
                     Zum Tool <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
@@ -701,17 +893,19 @@ Aufgabe:
 
         function renderTools(filter) {
             gridContainer.innerHTML = '';
-            const filtered = filter === 'all' 
-                ? toolsData 
+            const filtered = filter === 'all'
+                ? toolsData
                 : toolsData.filter(t => t.category.includes(filter) || (filter === 'Bild/Video' && (t.category.includes('Bild') || t.category.includes('Video') || t.category.includes('Audio'))));
 
             filtered.forEach(tool => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-xl p-6 shadow-sm border border-stone-200 hover:shadow-md transition cursor-pointer flex flex-col h-full group';
+                card.className = 'bg-white dark:bg-stone-800 rounded-xl p-6 shadow-sm border border-stone-200 dark:border-stone-700 hover:shadow-md dark:hover:shadow-lg dark:hover:shadow-stone-900/50 transition cursor-pointer flex flex-col h-full group';
                 card.onclick = () => openModal(tool);
-                
-                const costColor = tool.cost.includes('Free') ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800';
-                
+
+                const costColor = tool.cost.includes('Free')
+                    ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                    : 'bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200';
+
                 // Logo Logic: Use override if present, else construct from domain
                 let logoUrl = tool.logoOverride;
                 if (!logoUrl) {
@@ -723,18 +917,18 @@ Aufgabe:
                     <div class="flex justify-between items-start mb-4">
                         <img src="${logoUrl}" alt="${tool.name}" class="tool-logo" onerror="this.src='https://via.placeholder.com/48?text=?'">
                         <div class="flex gap-2">
-                             <a href="${tool.url}" target="_blank" onclick="event.stopPropagation()" class="bg-stone-100 hover:bg-stone-200 text-stone-500 hover:text-teal-600 px-2 py-1 rounded-full text-xs font-bold transition flex items-center justify-center h-6 w-6">
+                             <a href="${tool.url}" target="_blank" onclick="event.stopPropagation()" class="bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 px-2 py-1 rounded-full text-xs font-bold transition flex items-center justify-center h-6 w-6">
                                 <i class="fas fa-external-link-alt"></i>
                             </a>
                             <span class="text-xs font-bold px-2 py-1 rounded-full ${costColor} h-6 flex items-center">${tool.cost}</span>
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-stone-800 mb-1">${tool.name}</h3>
-                    <p class="text-xs text-teal-600 font-semibold uppercase tracking-wide mb-3">${tool.category}</p>
-                    <p class="text-stone-600 text-sm mb-4 line-clamp-3 flex-grow">${tool.strengths}</p>
-                    <div class="mt-auto pt-4 border-t border-stone-100 flex justify-between items-center text-xs text-stone-400">
+                    <h3 class="text-lg font-bold text-stone-800 dark:text-stone-100 mb-1">${tool.name}</h3>
+                    <p class="text-xs text-teal-600 dark:text-teal-400 font-semibold uppercase tracking-wide mb-3">${tool.category}</p>
+                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-4 line-clamp-3 flex-grow">${tool.strengths}</p>
+                    <div class="mt-auto pt-4 border-t border-stone-100 dark:border-stone-700 flex justify-between items-center text-xs text-stone-400 dark:text-stone-500">
                         <span>Kl. ${tool.grade}</span>
-                        <span class="group-hover:text-teal-600 font-medium flex items-center gap-1">Prompt-Vergleich <i class="fas fa-arrow-right"></i></span>
+                        <span class="group-hover:text-teal-600 dark:group-hover:text-teal-400 font-medium flex items-center gap-1">Prompt-Vergleich <i class="fas fa-arrow-right"></i></span>
                     </div>
                 `;
                 gridContainer.appendChild(card);
@@ -757,16 +951,16 @@ Aufgabe:
             document.getElementById('modal-privacy').textContent = tool.privacy;
             document.getElementById('modal-strengths').textContent = tool.strengths;
             document.getElementById('modal-risks').textContent = tool.risks;
-            
+
             // Standard vs Pro
             document.getElementById('modal-standard-prompt').textContent = `"${tool.standardPrompt}"`;
             document.getElementById('modal-standard-critique').textContent = tool.standardCritique;
             document.getElementById('modal-template').textContent = tool.template;
-            
+
             // Strategies
             const pmList = document.getElementById('modal-powermoves');
             pmList.innerHTML = tool.powerMoves.map(pm => `<li>${pm}</li>`).join('');
-            
+
             const exList = document.getElementById('modal-examples');
             exList.innerHTML = tool.examples.map(ex => `<li class="bg-emerald-100/50 p-2 rounded border border-emerald-100">${ex}</li>`).join('');
 
@@ -811,7 +1005,42 @@ Aufgabe:
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check saved theme or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+        }
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                if (e.matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+        });
+
+        // Initialize theme on load
+        initTheme();
+
         document.addEventListener('DOMContentLoaded', () => { renderTools('all'); });
     </script>
 </body>
+
 </html>
